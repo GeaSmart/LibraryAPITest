@@ -1,5 +1,7 @@
 using BootcampLibraryAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +14,28 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+/*Configuracion SWAGGER*/
+var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+var xmlPath = Path.Combine(AppContext.BaseDirectory,xmlFile);
+
+builder.Services.AddSwaggerGen(config =>
+{
+    config.SwaggerDoc("v1",
+        new Microsoft.OpenApi.Models.OpenApiInfo()
+        {
+            Title = "Mi API de biblioteca - Bootcamp",
+            Description = "Este es un API para ...",
+            Version = "v1",
+            Contact = new Microsoft.OpenApi.Models.OpenApiContact()
+            {
+                Name = "Bootcamp COL - 04",
+                Email = "contact@jalasoft.com",
+                Url = new Uri(@"https://google.com")
+            }
+        });
+    config.IncludeXmlComments(xmlPath);
+});
 
 
 var app = builder.Build();
