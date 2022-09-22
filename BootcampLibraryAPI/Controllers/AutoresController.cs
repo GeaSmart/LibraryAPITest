@@ -46,8 +46,7 @@ namespace BootcampLibraryAPI.Controllers
             if (existe)
                 return BadRequest($"Ya existe un autor con el nombre {autorCreacionDTO.NombreCompleto}");
 
-            //mapeo manual
-            var autor = mapper.Map<Autor>(autorCreacionDTO);
+             var autor = mapper.Map<Autor>(autorCreacionDTO);
 
             context.Add(autor);
             await context.SaveChangesAsync();

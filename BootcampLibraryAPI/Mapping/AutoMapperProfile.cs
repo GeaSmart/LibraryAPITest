@@ -11,6 +11,7 @@ namespace BootcampLibraryAPI.Mapping
             //Reglas de mapeo
             CreateMap<Autor, AutorDTO>();
             CreateMap<AutorCreacionDTO, Autor>();
+
             CreateMap<Libro, LibroDTO>();
             CreateMap<LibroCreacionDTO, Libro>();
         }
