@@ -1,4 +1,5 @@
-﻿using BootcampLibraryAPI.Data;
+﻿using AutoMapper;
+using BootcampLibraryAPI.Data;
 using BootcampLibraryAPI.DTO;
 using BootcampLibraryAPI.Entidades;
 using Microsoft.AspNetCore.Mvc;
@@ -12,45 +13,41 @@ namespace BootcampLibraryAPI.Controllers
     public class AutoresController : ControllerBase
     {
         private readonly ApplicationDbContext context;
+        private readonly IMapper mapper;
 
-        public AutoresController(ApplicationDbContext context)
+        public AutoresController(ApplicationDbContext context, IMapper mapper)
         {
             this.context = context;
+            this.mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<List<AutorDTO>> Get()
+        public async Task<ActionResult<List<AutorDTO>>> Get()
         {
-            //mapeo manual
-            List<AutorDTO> listaResponse = new List<AutorDTO>();
-            var listaAutores = await context.Autores.ToListAsync();
-            foreach (var item in listaAutores)
-            {
-                var dto = new AutorDTO { Id = item.Id, NombreCompleto = item.NombreCompleto };
-                listaResponse.Add(dto);
-            }
-            return listaResponse;
-            //return await context.Autores.ToListAsync();
+            var autores = await context.Autores.ToListAsync();
+            return mapper.Map<List<AutorDTO>>(autores);
+        }
+
+        [HttpGet("{id:int}")] //localhost/api/autores/1
+        public async Task<ActionResult<AutorDTO>> Get(int id)
+        {
+            var autor = await context.Autores.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (autor == null)
+                return NotFound($"El autor con id {id} no existe.");
+
+            return mapper.Map<AutorDTO>(autor);
         }
 
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] AutorCreacionDTO autorCreacionDTO)
         {
-            //TODO: No existan nombres duplicados
-
             var existe = await context.Autores.AnyAsync(x => x.NombreCompleto == autorCreacionDTO.NombreCompleto);
             if (existe)
                 return BadRequest($"Ya existe un autor con el nombre {autorCreacionDTO.NombreCompleto}");
 
-            //Expression<Func<Autor,bool>> filter = x => x.NombreCompleto == autor.NombreCompleto;
-            //var listaAutoresFiltrados = await context.Autores.Where(filter).ToListAsync();
-            //if (await context.Autores.FirstOrDefaultAsync(x => x.NombreCompleto == autor.NombreCompleto) != null)
-            //{
-            //    return BadRequest($"Ya existe un autor con el nombre {autor.NombreCompleto}");
-            //}
-
             //mapeo manual
-            var autor = new Autor { NombreCompleto = autorCreacionDTO.NombreCompleto };
+            var autor = mapper.Map<Autor>(autorCreacionDTO);
 
             context.Add(autor);
             await context.SaveChangesAsync();
