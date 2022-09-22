@@ -45,6 +45,10 @@ namespace BootcampLibraryAPI.Controllers
             if (existe)
                 return BadRequest($"Ya existe un libro con el título {libroCreacionDTO.Titulo}");
 
+            //validación de no fecha publicación futura
+            if(libroCreacionDTO.FechaPublicacion > DateTime.Now)
+                return BadRequest($"No se puede insertar un libro con fecha de publicación a futuro");
+
             var libro = mapper.Map<Libro>(libroCreacionDTO);
 
             context.Add(libro);
