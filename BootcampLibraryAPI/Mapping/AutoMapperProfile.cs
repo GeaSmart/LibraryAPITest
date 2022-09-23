@@ -14,6 +14,9 @@ namespace BootcampLibraryAPI.Mapping
 
             CreateMap<Libro, LibroDTO>();
             CreateMap<LibroCreacionDTO, Libro>();
+
+            CreateMap<Comentario, ComentarioDTO>();
+            CreateMap<ComentarioCreacionDTO, Comentario>();
         }
     }
 }
