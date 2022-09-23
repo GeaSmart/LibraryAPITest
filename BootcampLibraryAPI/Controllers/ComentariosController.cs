@@ -24,18 +24,13 @@ namespace BootcampLibraryAPI.Controllers
         public async Task<ActionResult<List<ComentarioDTO>>> Get(int libroId)
         {
             //validaciones
-            var existeLibro = await context.Libros.AnyAsync(x => x.Id == libroId);
-            if (!existeLibro)
+            var libro = await context.Libros
+                .Include(x=>x.Comentarios)
+                .FirstOrDefaultAsync(x => x.Id == libroId);
+            if (libro == null)
                 return NotFound($"El libro con id {libroId} no existe");
 
-            //var libro = await context.Libros.Include(x=>x.Comentarios).FirstOrDefaultAsync(x=>x.Id == libroId);
-            //if (libro == null)
-            //    return NotFound();
-
-            //var comentarios = libro.Comentarios;
-
-            var comentarios = await context.Comentarios.Where(x => x.LibroId == libroId).ToListAsync();
-
+            var comentarios = libro.Comentarios;
             return mapper.Map<List<ComentarioDTO>>(comentarios);
         }
     }
