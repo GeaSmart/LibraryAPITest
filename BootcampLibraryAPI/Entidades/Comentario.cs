@@ -2,9 +2,8 @@
 
 namespace BootcampLibraryAPI.Entidades
 {
-    public class Comentario
+    public class Comentario : BaseEntity
     {        
-        public int Id { get; set; }
         [Required]
         [Range(1,5)]
         public int Rating { get; set; }

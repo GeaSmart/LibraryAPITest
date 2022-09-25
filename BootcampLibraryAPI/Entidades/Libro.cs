@@ -2,9 +2,8 @@
 
 namespace BootcampLibraryAPI.Entidades
 {
-    public class Libro
+    public class Libro : BaseEntity
     {
-        public int Id { get; set; }
         [Required]
         [StringLength(75)]
         public string Titulo { get; set; }
